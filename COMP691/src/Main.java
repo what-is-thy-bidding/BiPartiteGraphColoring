@@ -11,7 +11,7 @@ public class Main {
 	public static boolean[][] AdjacencyMatrix=null;
 	
 	
-	public static String FileName = "graph4.txt";
+	public static String FileName = "RandomGraph4.txt";
 	
 	
 	public static int Order[]= null;
@@ -60,7 +60,6 @@ public class Main {
  * CBIP(G,sigma)
  * MyAlgorithm(G,sigma)
  * */
-		
 	
 	public static void CBIP() {
 		
@@ -69,16 +68,17 @@ public class Main {
 		int[] vertexColor= new int[Order.length];
 		
 		for(int i=0;i<Order.length;i++) {
-			System.out.println("vertex = "+Order[i]);
+			//System.out.print("vertex = "+Order[i]);
 			if(i==0) { // Base Case assigning a color to the 1st vertex
 				colors++;
 				vertexColor[Order[i]-1]=colors;
-				System.out.println(" , color= "+vertexColor[Order[i]-1] );
+				//System.out.println(" , color= "+vertexColor[Order[i]-1] );
 			}else {
 				
 				boolean[]vertexVisited= new boolean[Order.length]; // set of vertices from their index values for BFS to find out if they have been visited or not.
 				
 				boolean[][] ColorsNotEligible=new boolean[2][colors]; // set of colors used by the 2 sets of vertices - (U & V) -  Bipartition
+																	  // The indices represent the color values.
 				
 				//System.out.println("ColorsNotEligible[# of colors] = " +ColorsNotEligible[0].length );
 				
@@ -88,7 +88,7 @@ public class Main {
 				
 				ArrayList<Integer> queue= new ArrayList<Integer>(); // A Queue, for a set of adjacent vertices for BFS
 				
-				System.out.print("Adjacent vertices = ");
+				//System.out.print(" Adjacent vertices = ");
 				
 				for(int j=0;j<i;j++) {
 					
@@ -100,89 +100,105 @@ public class Main {
 						
 						ColorsNotEligible[0][vertexColor[Order[j]-1] - 1]=true; // U vertex set -> Since these vertices are IMMIDEATE neighbors of currentVertex.
 						
-						System.out.print(Order[j]+ " , ");
+						//System.out.print(Order[j]+ " , ");
 						
 					}
 				}
-				System.out.print( " // ");
 				
-				boolean part_of_V=true; // To check if the vertices belong to U or V, flips sign alternatively.
-				
-				
-				while(!queue.isEmpty()) {// Runs till the queue is empty/ no more new vertices are encountered.
+				if(queue.isEmpty()) { // Vertex Is independent
 					
-					ArrayList<Integer>tempQueue= new ArrayList<>(queue);// Copying the original queue to a temporary queue
-					
-					queue.clear(); // Emptying the original queue, to keep the original queue only for new vertices
-					
-					while(!tempQueue.isEmpty()) { // running this until we find out all the nth distance neighbors from the currentVertex
+					vertexColor[currentVertex-1]=1;
 
-						int adjVertex=tempQueue.get(0);// Getting the top of the queue
+					/*System.out.println("Vertex has no neighbours ");
+					System.out.println(" , color= "+1 );*/
+				
+				}else {
+					
+					//System.out.print( " // ");
+					
+					
+					boolean part_of_V=true; // To check if the vertices belong to U or V, flips sign alternatively.
+					
+					
+					while(!queue.isEmpty()) {// Runs till the queue is empty/ no more new vertices are encountered.
 						
-						tempQueue.remove(0); // Polling the top of the queue
+						ArrayList<Integer>tempQueue= new ArrayList<>(queue);// Copying the original queue to a temporary queue
 						
-						// Find the immediate neighbors of the current AdjacentVertex.
-						//The immediate neighbor have to come from the list of vertices that have arrived before the currentVertex and NOT include the currentVertex.	
+						queue.clear(); // Emptying the original queue, to keep the original queue only for new vertices
 						
-						for(int j=0;j<i;j++) {
-								// An edge exists						     // In case the same vertices are not repeated
-							if(AdjacencyMatrix[adjVertex-1][Order[j]-1]==true  && vertexVisited[Order[j]-1]==false) {
-								
-								queue.add(Order[j]); //Immediate neighbor of the adjacent Vertex has been added to the queue 
-								System.out.print(Order[j]+ " , ");
-								vertexVisited[Order[j]-1]= true; // Immediate neighbor/Order[j] has been marked visited will not be repeated
-								
-								if(part_of_V) { // V vertex set
-									ColorsNotEligible[1][vertexColor[Order[j]-1] ]=true; // Its color value is set true and cannot be taken for the currentVertex
+						while(!tempQueue.isEmpty()) { // running this until we find out all the nth distance neighbors from the currentVertex
 
-								}else { // U vertex set
-									ColorsNotEligible[0][vertexColor[Order[j]-1] ]=true;// Its color value is set true and can be taken for the currentVertex
+							int adjVertex=tempQueue.get(0);// Getting the top of the queue
+							
+							tempQueue.remove(0); // Polling the top of the queue
+							
+							// Find the immediate neighbors of the current AdjacentVertex.
+							//The immediate neighbor have to come from the list of vertices that have arrived before the currentVertex and NOT include the currentVertex.	
+							
+							for(int j=0;j<i;j++) {
+									// An edge exists						     // In case the same vertices are not repeated
+								if(AdjacencyMatrix[adjVertex-1][Order[j]-1]==true  && vertexVisited[Order[j]-1]==false) {
+									
+									queue.add(Order[j]); //Immediate neighbor of the adjacent Vertex has been added to the queue 
+									
+									//System.out.print(Order[j]+ " , ");
+									
+									vertexVisited[Order[j]-1]= true; // Immediate neighbor/Order[j] has been marked visited will not be repeated
+									
+									if(part_of_V) { // V vertex set
+										ColorsNotEligible[1][vertexColor[Order[j]-1] -1]=true; // Its color value is set true and cannot be taken for the currentVertex
+
+									}else { // U vertex set
+										ColorsNotEligible[0][vertexColor[Order[j]-1] -1]=true;// Its color value is set true and can be taken for the currentVertex
+									}
 								}
+									
 							}
-								
+							
+							
+							
+						
 						}
 						
 						
 						
-					
+						part_of_V=!part_of_V; // Flip the boolean to make sure only alternating depth node colors are added
+						
 					}
 					
+					//System.out.println();
 					
+					//print2Darray(ColorsNotEligible);// Printing the colors - U & V
 					
-					part_of_V=!part_of_V; // Flip the boolean to make sure only alternating depth node colors are added
+					//System.out.println();
 					
-				}
-				
-				System.out.println();
-				
-				print2Darray(ColorsNotEligible);// Printing the colors - U & V
-				
-				System.out.println();
-				
-				boolean ColorAssigned=false;
-				for(int j=0;j<colors;j++) {
-						// U vertices						// V vertices
-					if(ColorsNotEligible[0][j]==false && ColorsNotEligible[1][j]==true) {
-						vertexColor[currentVertex-1]=j+1; // Assigning minimum legal color
-						ColorAssigned=true;
-						System.out.println(" , color= "+(j+1) );
+					boolean ColorAssigned=false;
+					for(int j=0;j<colors;j++) {
+							// U vertices						// V vertices
+						if(ColorsNotEligible[0][j]==false && ColorsNotEligible[1][j]==true) {
+							vertexColor[currentVertex-1]=j+1; // Assigning minimum legal color
+							ColorAssigned=true;
+							//System.out.println(" , color= "+(j+1) );
+
+						}
+					}
+					
+					if(ColorAssigned==false) {
+						colors++;
+						vertexColor[currentVertex-1]=colors;
+						//System.out.println(" , color= "+colors );
 
 					}
-				}
+									
+					
+					
+				}	
 				
-				if(ColorAssigned==false) {
-					colors++;
-					vertexColor[currentVertex-1]=colors;
-					System.out.println(" , color= "+colors );
+				
+				}
+			//System.out.println("*******************");
 
-				}
-								
 				
-				
-			}	
-			
-			System.out.println("*******************");
-			
 		}
 		System.out.println("CBIP : Total Number of Colors = " + colors);
 	}
@@ -191,7 +207,6 @@ public class Main {
 	public static void FirstFit() {
 		
 		int colors=0;
-		
 		
 		HashMap<Integer,Integer> vertexColor= new HashMap<Integer, Integer>(Order.length); // Key= vertexNumber, Value=colorNumber
 		
@@ -293,7 +308,7 @@ public class Main {
 	
 	public static void readGraph() throws IOException {
 		
-		int numberOfVertices=0, numberOfEdges=0;
+		int numberOfVertices=0;
 		
 		File file= new File(FileName);
 		
@@ -305,9 +320,7 @@ public class Main {
 					
 					if(array.length==3) {
 						numberOfVertices=Integer.parseInt(array[0]);
-						numberOfEdges=Integer.parseInt(array[2]);
 						System.out.println("Number of Vertices = "+ numberOfVertices);
-						//System.out.println("Number of Edges = "+ numberOfEdges);
 						AdjacencyMatrix=new boolean[numberOfVertices][numberOfVertices];
 
 					}else {
@@ -337,7 +350,7 @@ public class Main {
 		
 		System.out.println();
 		
-		//RandomInputOrder();
+		RandomInputOrder();
 		
 		System.out.println();
 		
@@ -354,13 +367,14 @@ public class Main {
 		
 		
 		/*
-		 *Graph3.txt */
+		 *Graph3.txt 
 		Order= new int[5];
 		Order[0]= 1;
 		Order[1]= 2;
 		Order[2]= 3;
 		Order[3]= 4;
-		Order[4]= 5;		
+		Order[4]= 5;*/		
+		
 		FirstFit();
 		
 		CBIP();
