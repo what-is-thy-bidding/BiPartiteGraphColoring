@@ -11,7 +11,7 @@ public class Main {
 	public static boolean[][] AdjacencyMatrix=null;
 	
 	
-	public static String FileName = "graph.txt";
+	public static String FileName = "graph4.txt";
 	
 	
 	public static int Order[]= null;
@@ -69,16 +69,18 @@ public class Main {
 		int[] vertexColor= new int[Order.length];
 		
 		for(int i=0;i<Order.length;i++) {
-			//System.out.println(Order[i]);
+			System.out.println("vertex = "+Order[i]);
 			if(i==0) { // Base Case assigning a color to the 1st vertex
 				colors++;
 				vertexColor[Order[i]-1]=colors;
-				
+				System.out.println(" , color= "+vertexColor[Order[i]-1] );
 			}else {
 				
-				boolean[]vertexVisited= new boolean[i+1]; // set of vertices from their index values for BFS to find out if they have been visited or not.
+				boolean[]vertexVisited= new boolean[Order.length]; // set of vertices from their index values for BFS to find out if they have been visited or not.
 				
 				boolean[][] ColorsNotEligible=new boolean[2][colors]; // set of colors used by the 2 sets of vertices - (U & V) -  Bipartition
+				
+				//System.out.println("ColorsNotEligible[# of colors] = " +ColorsNotEligible[0].length );
 				
 				int currentVertex=Order[i]; // The current vertex 
 				
@@ -86,29 +88,35 @@ public class Main {
 				
 				ArrayList<Integer> queue= new ArrayList<Integer>(); // A Queue, for a set of adjacent vertices for BFS
 				
+				System.out.print("Adjacent vertices = ");
+				
 				for(int j=0;j<i;j++) {
 					
 					if(AdjacencyMatrix[currentVertex-1][Order[j]-1]) { // if an edge exists between the currentVertex and the previous arrived vertices in the Order
 						
 						queue.add(Order[j]); // adjacentVertex has been added to the queue
-						
+										
 						vertexVisited[Order[j]-1]= true;// adjacentVertex has been marked visited
 						
-						ColorsNotEligible[0][vertexColor[Order[j]-1]]=true; // U vertex set -> Since these vertices are IMMIDEATE neighbors of currentVertex.
+						ColorsNotEligible[0][vertexColor[Order[j]-1] - 1]=true; // U vertex set -> Since these vertices are IMMIDEATE neighbors of currentVertex.
+						
+						System.out.print(Order[j]+ " , ");
+						
 					}
 				}
+				System.out.print( " // ");
 				
 				boolean part_of_V=true; // To check if the vertices belong to U or V, flips sign alternatively.
 				
 				
 				while(!queue.isEmpty()) {// Runs till the queue is empty/ no more new vertices are encountered.
 					
-					ArrayList<Integer>tempQueue= new ArrayList<Integer>(queue);// Copying the original queue to a temporary queue
+					ArrayList<Integer>tempQueue= new ArrayList<>(queue);// Copying the original queue to a temporary queue
 					
 					queue.clear(); // Emptying the original queue, to keep the original queue only for new vertices
 					
-					while(tempQueue.isEmpty()) { // running this until we find out all the nth distance neighbors from the currentVertex
-						
+					while(!tempQueue.isEmpty()) { // running this until we find out all the nth distance neighbors from the currentVertex
+
 						int adjVertex=tempQueue.get(0);// Getting the top of the queue
 						
 						tempQueue.remove(0); // Polling the top of the queue
@@ -121,7 +129,7 @@ public class Main {
 							if(AdjacencyMatrix[adjVertex-1][Order[j]-1]==true  && vertexVisited[Order[j]-1]==false) {
 								
 								queue.add(Order[j]); //Immediate neighbor of the adjacent Vertex has been added to the queue 
-								
+								System.out.print(Order[j]+ " , ");
 								vertexVisited[Order[j]-1]= true; // Immediate neighbor/Order[j] has been marked visited will not be repeated
 								
 								if(part_of_V) { // V vertex set
@@ -145,31 +153,38 @@ public class Main {
 					
 				}
 				
+				System.out.println();
+				
+				print2Darray(ColorsNotEligible);// Printing the colors - U & V
+				
+				System.out.println();
+				
 				boolean ColorAssigned=false;
 				for(int j=0;j<colors;j++) {
 						// U vertices						// V vertices
 					if(ColorsNotEligible[0][j]==false && ColorsNotEligible[1][j]==true) {
 						vertexColor[currentVertex-1]=j+1; // Assigning minimum legal color
 						ColorAssigned=true;
+						System.out.println(" , color= "+(j+1) );
+
 					}
 				}
 				
 				if(ColorAssigned==false) {
 					colors++;
 					vertexColor[currentVertex-1]=colors;
+					System.out.println(" , color= "+colors );
+
 				}
-				
 								
 				
 				
-			}
+			}	
 			
-			
-			
-			
-			
+			System.out.println("*******************");
 			
 		}
+		System.out.println("CBIP : Total Number of Colors = " + colors);
 	}
 	
 	
@@ -214,7 +229,7 @@ public class Main {
 			
 		}
 		
-		//System.out.println("Total Number of colors = " + colors);
+		System.out.println("FirstFit : Total Number of colors = " + colors);
 		//printHashMap(vertexColor);
 	}
 	
@@ -261,7 +276,7 @@ public class Main {
 	public static void print2Darray(boolean[][] array) {
 		int row=0;
 		System.out.println();
-		for(int i=0;i<array.length;i++) {
+		for(int i=0;i<array[0].length;i++) {
 			System.out.format("%10d", i+1);
 		}
 			System.out.println();
@@ -340,13 +355,14 @@ public class Main {
 		
 		/*
 		 *Graph3.txt */
-		Order= new int[4];
-		Order[0]= 3;
+		Order= new int[5];
+		Order[0]= 1;
 		Order[1]= 2;
-		Order[2]= 1;
+		Order[2]= 3;
 		Order[3]= 4;
-		
+		Order[4]= 5;		
 		FirstFit();
+		
 		CBIP();
 	}
 

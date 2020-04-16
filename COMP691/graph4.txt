@@ -1,0 +1,6 @@
+%MatrixMarket matrix c o o r d i n a t e p a t t e r n symmetric
+5 5 4
+1 4
+2 3
+3 4
+4 5
