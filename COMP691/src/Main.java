@@ -11,43 +11,19 @@ public class Main {
 	public static boolean[][] AdjacencyMatrix=null;
 	
 	
-	public static String FileName = "RandomGraph4.txt";
+	public static String FileName = "";
 	
 	
 	public static int Order[]= null;
 
 	
-	/*
-    
-	Undirected Graph Formats
-    % comment l i n e 1
-	% comment l i n e 2
-	n n m
-	u1 v1
-	u2 v2
-	...
-	um vm
+	public static int numberOfVertices=0;
 	
-	More specifically, any line starting with % is a comment and should be ignored. The first
-	line that does not start with % contains 3 integers n, n, m. The integer n is repeated twice
-	and stands for the number of vertices |V |. The integer m stands for the number of edges |E|.
-	The next m lines contain description of edges as pairs of vertices.
- * 
- * 
- * 	For example, the following
-	example shows how a graph with 4 nodes and 6 edges {1, 2}, {1, 3}, {2, 3}, {1, 4}, {2, 4}, {3, 4}
-	can be represented as follows:
- 	
- 	%MatrixMarket matrix c o o r d i n a t e p a t t e r n symmetric
-	4 4 6
-	2 1
-	3 1
-	3 2
-	4 1
-	4 2
-	4 3
+	public static double NetworkGraphData[][]= new double[2][5];
 	
- * */
+	public static double RandomGraphData[][]= new double[2][5];
+	
+	public static int Iterations=1;// Keep the number of iterations as 1 AT LEAST 
 		
 	
 /*
@@ -61,7 +37,78 @@ public class Main {
  * MyAlgorithm(G,sigma)
  * */
 	
-	public static void CBIP() {
+	public static void ReadNetworkRepoGraphs() {
+		System.out.println("\n **************************** \n Network Repository Graphs\n **************************** \n");	
+		try {
+			
+			for(int j=0;j<Iterations;j++) {
+				for(int i=1;i<=5 ;i++) {
+					FileName="NetworkRepoGraph"+i+".txt";
+					readGraph(FileName);
+					
+					//System.out.println();
+					
+					RandomInputOrder();
+					
+					System.out.println();
+					
+					NetworkGraphData[0][i-1]+=FirstFit();
+					
+					NetworkGraphData[1][i-1]+=CBIP();
+				}
+				System.out.println("\n **************************** \n");
+			}
+				
+					
+				
+		} catch (IOException e) {
+			System.out.println("File Not Found ");
+			e.printStackTrace();
+		}
+		
+		System.out.println("\n **************************** \n");
+		
+		
+		
+	}
+	
+	public static void ReadRandomGraphs() {
+		System.out.println("\n **************************** \n     Random Graphs\n **************************** \n");
+		try {
+			
+			for(int j=0;j<Iterations;j++) {
+				for(int i=1;i<=5 ;i++) {
+					FileName="RandomGraph"+i+".txt";
+					readGraph(FileName);
+					
+					//System.out.println();
+					
+					RandomInputOrder();
+					
+					System.out.println();
+					
+					RandomGraphData[0][i-1]+=FirstFit();
+					
+					RandomGraphData[1][i-1]+=CBIP();
+				}
+			
+			}
+			
+				
+		} catch (IOException e) {
+			System.out.println("File Not Found ");
+			e.printStackTrace();
+		}
+		
+		
+		System.out.println("\n **************************** \n");
+		
+		
+
+	}
+	
+	
+	public static int CBIP() {
 		
 		int colors=0;
 		
@@ -194,6 +241,7 @@ public class Main {
 					
 				}	
 				
+				//printVertexColors(vertexColor);
 				
 				}
 			//System.out.println("*******************");
@@ -201,10 +249,18 @@ public class Main {
 				
 		}
 		System.out.println("CBIP : Total Number of Colors = " + colors);
+		return colors;
 	}
 	
 	
-	public static void FirstFit() {
+	public static void printVertexColors(int[] array) {
+		for(int i=0;i<array.length;i++) {
+			System.out.println("Vertex: "+ (i+1) + " -- > Color: "+array[i] );
+		}
+	}
+	
+	
+	public static int FirstFit() {
 		
 		int colors=0;
 		
@@ -245,7 +301,10 @@ public class Main {
 		}
 		
 		System.out.println("FirstFit : Total Number of colors = " + colors);
+		
 		//printHashMap(vertexColor);
+		
+		return colors;
 	}
 	
 	
@@ -276,7 +335,7 @@ public class Main {
 			
 		}
 		
-		printArray(Order);
+		//printArray(Order);
 	}
 
 	
@@ -306,9 +365,8 @@ public class Main {
 	}
 	
 	
-	public static void readGraph() throws IOException {
+	public static void readGraph(String FileName) throws IOException {
 		
-		int numberOfVertices=0;
 		
 		File file= new File(FileName);
 		
@@ -320,64 +378,79 @@ public class Main {
 					
 					if(array.length==3) {
 						numberOfVertices=Integer.parseInt(array[0]);
-						System.out.println("Number of Vertices = "+ numberOfVertices);
+						System.out.println("\n Number of Nodes = "+ numberOfVertices);
 						AdjacencyMatrix=new boolean[numberOfVertices][numberOfVertices];
 
 					}else {
-						System.out.println(array[0]+ " -- > " + array[1]);
-						AdjacencyMatrix[Integer.parseInt(array[0])-1][Integer.parseInt(array[1])-1]=true;
-						AdjacencyMatrix[Integer.parseInt(array[1])-1][Integer.parseInt(array[0])-1]=true;
+						//System.out.println(array[0]+ " -- > " + array[1]);
+						
+						if(array[0].compareTo(array[1])!=0) { // No self loops
+							AdjacencyMatrix[Integer.parseInt(array[0])-1][Integer.parseInt(array[1])-1]=true;
+							AdjacencyMatrix[Integer.parseInt(array[1])-1][Integer.parseInt(array[0])-1]=true;
 
+						}
+							
 					}
 				}
 				
 			}
 		br.close();
 		
-		print2Darray(AdjacencyMatrix);
+		//print2Darray(AdjacencyMatrix);
 		
 		
 	}
 	
 	
-	public static void main(String[] args) {
-		try {
-			readGraph();
-		} catch (IOException e) {
-			System.out.println("File Not Found ");
-			e.printStackTrace();
+	public static void execute() {
+		
+		ReadNetworkRepoGraphs();
+		
+		
+		
+		ReadRandomGraphs();
+		
+		System.out.println("\n **************************** \n   Network Repository Graphs DATA\n **************************** \n");
+		boolean check=true;
+		for(double[] i:NetworkGraphData) {
+			if(check==true) {
+				System.out.print("FirstFit : ");
+				check=false;
+
+			}else {
+				System.out.print("CBIP : ");
+				check=true;
+
+			}
+			for(double j:i) {
+				System.out.print( (j/Iterations) + " , ");
+			}
+			System.out.println();
+		}
+		check=true;
+		System.out.println("\n **************************** \n     Random Graphs DATA\n **************************** \n");
+		
+		
+		for(double[] i:RandomGraphData) {
+			if(check==true) {
+				System.out.print("FirstFit : ");
+				check=false;
+			}else {
+				System.out.print("CBIP : ");
+				check=true;
+
+			}
+			for(double j:i) {
+				System.out.print( (j/Iterations) + " , ");
+			}
+			System.out.println();
 		}
 		
-		System.out.println();
+	}
+	
 		
-		RandomInputOrder();
-		
-		System.out.println();
-		
-		/*
-		 *Graph2.txt
-		Order= new int[6];
-		Order[0]= 1;
-		Order[1]= 4;
-		Order[2]= 2;
-		Order[3]= 5;
-		Order[4]= 3;
-		Order[5]= 6;*/
-		
-		
-		
-		/*
-		 *Graph3.txt 
-		Order= new int[5];
-		Order[0]= 1;
-		Order[1]= 2;
-		Order[2]= 3;
-		Order[3]= 4;
-		Order[4]= 5;*/		
-		
-		FirstFit();
-		
-		CBIP();
+	public static void main(String[] args) {
+		execute();
 	}
 
 }
