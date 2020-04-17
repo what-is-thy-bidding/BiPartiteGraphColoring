@@ -10,7 +10,6 @@ public class Main {
 	
 	public static boolean[][] AdjacencyMatrix=null;
 	
-	
 	public static String FileName = "";
 	
 	
@@ -19,9 +18,9 @@ public class Main {
 	
 	public static int numberOfVertices=0;
 	
-	public static double NetworkGraphData[][]= new double[2][5];
+	public static double NetworkGraphData[][]= new double[3][5];
 	
-	public static double RandomGraphData[][]= new double[2][5];
+	public static double RandomGraphData[][]= new double[3][5];
 	
 	public static int Iterations=1;// Keep the number of iterations as 1 AT LEAST 
 		
@@ -55,6 +54,9 @@ public class Main {
 					NetworkGraphData[0][i-1]+=FirstFit();
 					
 					NetworkGraphData[1][i-1]+=CBIP();
+					
+					NetworkGraphData[2][i-1]+=MyAlgorithm();
+
 				}
 				System.out.println("\n **************************** \n");
 			}
@@ -66,11 +68,12 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		System.out.println("\n **************************** \n");
+		//System.out.println("\n **************************** \n");
 		
 		
 		
 	}
+	
 	
 	public static void ReadRandomGraphs() {
 		System.out.println("\n **************************** \n     Random Graphs\n **************************** \n");
@@ -90,6 +93,8 @@ public class Main {
 					RandomGraphData[0][i-1]+=FirstFit();
 					
 					RandomGraphData[1][i-1]+=CBIP();
+					
+					RandomGraphData[2][i-1]+=MyAlgorithm();
 				}
 			
 			}
@@ -264,7 +269,7 @@ public class Main {
 		
 		int colors=0;
 		
-		HashMap<Integer,Integer> vertexColor= new HashMap<Integer, Integer>(Order.length); // Key= vertexNumber, Value=colorNumber
+		int[] vertexColor= new int[Order.length]; // Key= vertexNumber, Value=colorNumber
 		
 		for(int i=0;i<Order.length;i++) {
 			int currentVertex=Order[i];
@@ -276,7 +281,7 @@ public class Main {
 			for(int j=0;j<i;j++) {
 				int previousVertex=Order[j];
 				if(AdjacencyMatrix[currentVertex-1][previousVertex-1]) { // An edge exists			
-					int previousVertexColor=vertexColor.get(previousVertex);
+					int previousVertexColor=vertexColor[previousVertex-1];
 					colorsUsed[previousVertexColor-1]= true;
 					
 				}
@@ -285,15 +290,15 @@ public class Main {
 			boolean colorAssigned=false;
 			
 			for(int j=0;j<colorsUsed.length;j++) {			
-				if(colorsUsed[j]==false) {
+				if(colorsUsed[j]==false) { // The minimum color NOT used
 					colorAssigned=true;
-					vertexColor.put(currentVertex, j+1);
+					vertexColor[currentVertex-1]= j+1;
 				}
 			}
 			
 			if(colorAssigned==false) {
 				colors++;
-				vertexColor.put(currentVertex,colors);
+				vertexColor[currentVertex-1]=colors;
 			}
 			//System.out.println("Current Vertex " + Order[i] + " and its' color = " + vertexColor.get(Order[i]));
 
@@ -302,18 +307,161 @@ public class Main {
 		
 		System.out.println("FirstFit : Total Number of colors = " + colors);
 		
-		//printHashMap(vertexColor);
 		
 		return colors;
 	}
 	
 	
-	public static void printHashMap(HashMap<Integer,Integer> vertexColor) {
+	public static int MyAlgorithm() {
+		
+		int colors=0;
+		
+		int[] vertexColor= new int[Order.length];
+		
 		for(int i=0;i<Order.length;i++) {
-			System.out.println("Vertex Number = "+(i+1) + "  --> Vertex Color = "+vertexColor.get(i+1));
+			//System.out.print("vertex = "+Order[i]);
+			if(i==0) { // Base Case assigning a color to the 1st vertex
+				colors++;
+				vertexColor[Order[i]-1]=colors;
+				//System.out.println(" , color= "+vertexColor[Order[i]-1] );
+			}else {
+				
+				boolean[]vertexVisited= new boolean[Order.length]; // set of vertices from their index values for BFS to find out if they have been visited or not.
+				
+				boolean[][] ColorsNotEligible=new boolean[2][colors]; // set of colors used by the 2 sets of vertices - (U & V) -  Bipartition
+																	  // The indices represent the color values.
+				
+				//System.out.println("ColorsNotEligible[# of colors] = " +ColorsNotEligible[0].length );
+				
+				int currentVertex=Order[i]; // The current vertex 
+				
+				vertexVisited[currentVertex-1]= true; // We have visited this vertex , and marked it as true for BFS 
+				
+				ArrayList<Integer> queue= new ArrayList<Integer>(); // A Queue, for a set of adjacent vertices for BFS
+				
+				//System.out.print(" Adjacent vertices = ");
+				
+				for(int j=0;j<i;j++) {
+					
+					if(AdjacencyMatrix[currentVertex-1][Order[j]-1]) { // if an edge exists between the currentVertex and the previous arrived vertices in the Order
+						
+						queue.add(Order[j]); // adjacentVertex has been added to the queue
+										
+						vertexVisited[Order[j]-1]= true;// adjacentVertex has been marked visited
+						
+						ColorsNotEligible[0][vertexColor[Order[j]-1] - 1]=true; // U vertex set -> Since these vertices are IMMIDEATE neighbors of currentVertex.
+						
+						//System.out.print(Order[j]+ " , ");
+						
+					}
+				}
+				
+				if(queue.isEmpty()) { // Vertex Is independent
+					
+					vertexColor[currentVertex-1]=1;
+
+					/*System.out.println("Vertex has no neighbours ");
+					System.out.println(" , color= "+1 );*/
+				
+				}else {
+					
+					//System.out.print( " // ");
+					
+					
+					boolean part_of_V=true; // To check if the vertices belong to U or V, flips sign alternatively.
+					
+					
+					while(!queue.isEmpty()) {// Runs till the queue is empty/ no more new vertices are encountered.
+						
+						ArrayList<Integer>tempQueue= new ArrayList<>(queue);// Copying the original queue to a temporary queue
+						
+						queue.clear(); // Emptying the original queue, to keep the original queue only for new vertices
+						
+						while(!tempQueue.isEmpty()) { // running this until we find out all the nth distance neighbors from the currentVertex
+
+							int adjVertex=tempQueue.get(0);// Getting the top of the queue
+							
+							tempQueue.remove(0); // Polling the top of the queue
+							
+							// Find the immediate neighbors of the current AdjacentVertex.
+							//The immediate neighbor have to come from the list of vertices that have arrived before the currentVertex and NOT include the currentVertex.	
+							
+							for(int j=0;j<i;j++) {
+									// An edge exists						     // In case the same vertices are not repeated
+								if(AdjacencyMatrix[adjVertex-1][Order[j]-1]==true  && vertexVisited[Order[j]-1]==false) {
+									
+									queue.add(Order[j]); //Immediate neighbor of the adjacent Vertex has been added to the queue 
+									
+									//System.out.print(Order[j]+ " , ");
+									
+									vertexVisited[Order[j]-1]= true; // Immediate neighbor/Order[j] has been marked visited will not be repeated
+									
+									if(part_of_V) { // V vertex set
+										ColorsNotEligible[1][vertexColor[Order[j]-1] -1]=true; // Its color value is set true and cannot be taken for the currentVertex
+
+									}else { // U vertex set
+										ColorsNotEligible[0][vertexColor[Order[j]-1] -1]=true;// Its color value is set true and can be taken for the currentVertex
+									}
+								}
+									
+							}
+							
+							
+							
+						
+						}
+						
+						
+						
+						part_of_V=!part_of_V; // Flip the boolean to make sure only alternating depth node colors are added
+						
+					}
+					
+					//System.out.println();
+					
+					//print2Darray(ColorsNotEligible);// Printing the colors - U & V
+					
+					//System.out.println();
+					
+					ArrayList<Integer> ListOfEligibleColors= new ArrayList<Integer>(); 
+					for(int j=0;j<colors;j++) {
+							// U vertices						// V vertices
+						if(ColorsNotEligible[0][j]==false && ColorsNotEligible[1][j]==true) {
+							ListOfEligibleColors.add(j+1); // j+1 is the color number
+							//System.out.println(" , color= "+(j+1) );
+
+						}
+					}
+					
+					if(ListOfEligibleColors.size()==0) {
+						colors++;
+						vertexColor[currentVertex-1]=colors;
+						//System.out.println(" , color= "+colors );
+
+					}else {
+						Random Rand= new Random();
+						
+						int indexChoice= Rand.nextInt(ListOfEligibleColors.size()); //[0,List.size-1] 
+																					//So shouldn't go out of bounds
+						
+						vertexColor[currentVertex-1]= ListOfEligibleColors.get(indexChoice);//Assigns color
+					}
+									
+					
+					
+				}	
+				
+				//printVertexColors(vertexColor);
+				
+				}
+			//System.out.println("*******************");
+
+				
 		}
+		System.out.println("MyAlgorithm(RandomCBIP) : Total Number of Colors = " + colors);
+		return colors;
 	}
-	
+
 	
 	public static void RandomInputOrder() {
 		
@@ -402,6 +550,45 @@ public class Main {
 	}
 	
 	
+	public static void Data() {
+		System.out.println("\n **************************** \n   Data after "+Iterations+ " Iteration(s)\n **************************** \n");
+
+		System.out.println("\n **************************** \n   Network Repository Graphs DATA\n **************************** \n");
+		
+		
+		for(int i=0;i<NetworkGraphData.length;i++) {
+			if(i==0) {
+				System.out.print("FirstFit      :");
+			}else if(i==1) {
+				System.out.print("CBIP          :");
+			}else if(i==2) {
+				System.out.print("MyAlgorithm   :");
+			}
+			for(double j:NetworkGraphData[i]) {
+				System.out.print( (j/Iterations) + " , ");
+			}
+			System.out.println();
+		}
+		
+		System.out.println("\n **************************** \n     Random Graphs DATA\n **************************** \n");
+		
+		
+		for(int i=0;i<RandomGraphData.length;i++) {
+			if(i==0) {
+				System.out.print("FirstFit     :");
+			}else if(i==1) {
+				System.out.print("CBIP         :");
+			}else if(i==2) {
+				System.out.print("MyAlgorithm  :");
+			}
+			
+			for(double j:RandomGraphData[i]) {
+				System.out.print( (j/Iterations) + " , ");
+			}
+			System.out.println();
+		}
+	}
+	
 	public static void execute() {
 		
 		ReadNetworkRepoGraphs();
@@ -410,41 +597,8 @@ public class Main {
 		
 		ReadRandomGraphs();
 		
-		System.out.println("\n **************************** \n   Network Repository Graphs DATA\n **************************** \n");
-		boolean check=true;
-		for(double[] i:NetworkGraphData) {
-			if(check==true) {
-				System.out.print("FirstFit : ");
-				check=false;
-
-			}else {
-				System.out.print("CBIP : ");
-				check=true;
-
-			}
-			for(double j:i) {
-				System.out.print( (j/Iterations) + " , ");
-			}
-			System.out.println();
-		}
-		check=true;
-		System.out.println("\n **************************** \n     Random Graphs DATA\n **************************** \n");
 		
-		
-		for(double[] i:RandomGraphData) {
-			if(check==true) {
-				System.out.print("FirstFit : ");
-				check=false;
-			}else {
-				System.out.print("CBIP : ");
-				check=true;
-
-			}
-			for(double j:i) {
-				System.out.print( (j/Iterations) + " , ");
-			}
-			System.out.println();
-		}
+		Data();
 		
 	}
 	
