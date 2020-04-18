@@ -1,5 +1,5 @@
 \documentclass{article}
-
+\usepackage{verbatim}
 \usepackage[scale=0.75,top=2cm]{geometry}
 \usepackage{tabularx}
 \usepackage{algpseudocode}
@@ -9,6 +9,12 @@
 \usepackage[utf8]{inputenc}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{floatrow}
+\usepackage{blindtext}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\newfloatcommand{capbtabbox}{table}[][\FBwidth]
 \usetikzlibrary{shapes}
 
 
@@ -100,7 +106,7 @@ randomly shuffled using the Java randomizer.\\
 of this data is shown in the Result section of this report.\\
 
 \textit{Iterations}: This global variable can be changed, depending upon how many times the user want to run all 3 algorithms for all the inputted 
-graphs and see what the average values of the number of colors used by all algorithms for all the graphs will be. We ran 100 iterations and the 
+graphs and see what the averaged out values of the number of colors used by all algorithms for all the graphs will be. We ran 100 iterations and the 
 average values computed are in a table in the result section of this report.\\
 
 \textbf{Challenges :}\\
@@ -112,9 +118,8 @@ and keeping alternating depth level vertices in different sets was the most chal
 Some other challenges we faced in this program were due to extensive use of arrays in our program, we had to be really careful as most of the errors
  came from ArrayIndexOutOfBoundsException because array indices start from 0 while the vertices in the graphs start from 1.\\
 
-Initially the code was tested with small graphs containing 5 to 10 vertices, as computing solutions of these graphs by hand was feasible.These small
- graphs were created to try and get the most number of colors from the FirstFit and CBIP algorithms (Adversarial Input). These graphs
- are also submitted with code.\\ 
+Initially the code was tested with small graphs containing 5 to 10 nodes, as computing solutions of these graphs by hand was feasible to compare
+ with the answers computed by the code. These small graphs were created to try and get the most number of colors from the FirstFit and CBIP algorithms (Adversarial Input). These graphs are also submitted with code.\\ 
 
 We cannot be completely sure that this program is bug free. The input graph formats and graph naming conventions have to be correct, for the 
 code to function as intended. We may have missed some edge cases. But because of extensive testing we are confident that the
@@ -124,84 +129,245 @@ code to function as intended. We may have missed some edge cases. But because of
 
 \bigbreak
 This program was coded in Java. The version of Java used was Java version 14.\\
-The system where this code was written used the windows operating system, had 16 Gigabytes of RAM and with an i5 processing chip. \\
+The system where this code was written used the Windows operating system, had 16 Gigabytes of RAM and with an i5 processing chip. \\
 The code was written in the Eclipse IDE. \\
-
-
-\newpage
-
-\section{Results}
-2.5 pages long\\
-This is where you present your findings, time-series plots, tables and comment on what you see. You need to analyze how the
-performance of CBIP compares to FirstFit and Your Algorithm, any patterns that you found, any general observations. The 
-deeper and the more interesting observations the better your grade will be.
-
+The Network Repository Graphs used: \\
 \begin{center}
- \begin{tabular}{||p{2cm} | p{2cm} | p{2cm} | p{2cm} ||} 
+ \begin{tabular}{||p{3cm} | p{4cm} | p{2cm}|p{2cm} ||} 
 \hline
 \multicolumn{4}{|c|}{Network Repository Graphs} \\
 
  \hline
-\hline
- Nodes & \multicolumn{3}{|c|}{Colors} \\
-\hline
-  & FirstFit & CBIP & MyAlgorithm \\ [0.5ex] 
+
+ Graph Name& File Name & Nodes & Edges \\ [0.5ex] 
  \hline\hline
- 66 & 4.91 & 17.5 & 17.53 \\ 
+ dwt\_66$^{[1]}$ &NetworkRepoGraph1.txt & 66 &193  \\ 
  \hline
- 101 & 6.41 & 3.08 & 3.08 \\
+ GD06\_theory$^{[2]}$&NetworkRepoGraph2.txt  & 101 & 190\\
  \hline
- 144 & 9.41 & 32.49 & 32.49 \\
+can\_144$^{[3]}$ &NetworkRepoGraph3.txt  & 144 & 720 \\
  \hline
- 204 & 6.36 & 29.05 & 28.23 \\
+ cat\_ears\_3\_1$^{[4]}$&NetworkRepoGraph4.txt & 204 & 542\\
  \hline
- 219 & 6.23 & 22.81 & 23.61\\ [1ex] 
+  ash219$^{[5]}$&NetworkRepoGraph5.txt  & 219 &438\\ [1ex] 
  \hline
 \end{tabular}
 \end{center}
 
-
-
-
-\includegraphics[width=0.75\textwidth]{NetworkRepoGraph}
-\bigbreak
-\includegraphics[width=0.75\textwidth]{RandomGraph}
-
+The Random Graphs used:\\
 \begin{center}
- \begin{tabular}{||p{2cm} | p{2cm} | p{2cm} | p{2cm} ||} 
+ \begin{tabular}{||p{3cm} | p{4cm} | p{2cm}|p{2cm} ||} 
 \hline
 \multicolumn{4}{|c|}{Random Graphs} \\
-\hline
-\hline
- Nodes & \multicolumn{3}{|c|}{Colors} \\
-\hline
- & FirstFit & CBIP & MyAlgorithm \\ [0.5ex] 
+
+ \hline
+
+ Graph Name& File Name & Nodes & Edges \\ [0.5ex] 
  \hline\hline
- 25 & 7.89 & 8.03 & 7.99 \\ 
+ RandomGraph1 &RandomGraph1.txt & 25 & 137  \\ 
  \hline
- 50 & 14.02 & 14 & 13.58\\
+ RandomGraph2 & RandomGraph2.txt  & 50 & 603 \\
  \hline
- 100 & 21.94 & 21.93 & 21.04 \\
+RandomGraph3 & RandomGraph3.txt  & 100 & 2,307 \\
  \hline
- 200 & 36.25 & 36.41 & 34.59 \\
+ RandomGraph4 & RandomGraph4.txt & 200 & 8,989\\
  \hline
- 400 & 62.88 & 63.19 & 60.16\\ [1ex] 
+RandomGraph5 & RandomGraph5.txt  & 400 & 36,317\\ [1ex] 
  \hline
 \end{tabular}
 \end{center}
 
-
 \newpage
+%------------------------------------------------------------------------
+
+
+\begin{comment}
+
+		\begin{center}
+		 \begin{tabular}{||p{2.5cm} | p{0.8cm} | p{1.5cm} | p{1.5cm} | p{1.9cm} ||} 
+		\hline
+		\multicolumn{5}{|c|}{Network Repository Graphs} \\
+		 \hline
+		\hline
+		Graph Name& Nodes & \multicolumn{3}{|c|}{Colors} \\
+		\hline
+		 & & FirstFit & CBIP & MyAlgorithm \\ [0.5ex] 
+		 \hline\hline
+		 & 66 & 4.91 & 17.5 & 17.53 \\ 
+		 \hline
+		 & 101 & 6.41 & 3.08 & 3.08 \\
+		 \hline
+		 & 144 & 9.41 & 32.49 & 32.49 \\
+		 \hline
+		 & 204 & 6.36 & 29.05 & 28.23 \\
+		 \hline
+		 & 219 & 6.23 & 22.81 & 23.61\\ [1ex] 
+		 \hline
+		\end{tabular}
+		\end{center}
+		
+		\includegraphics[width=0.75\textwidth]{NetworkRepoGraph}
+		
+		
+		\begin{center}
+		 \begin{tabular}{||p{2cm} | p{2cm} | p{2cm} | p{2cm} ||} 
+		\hline
+		\multicolumn{4}{|c|}{Random Graphs} \\
+		\hline
+		\hline
+		 Nodes & \multicolumn{3}{|c|}{Colors} \\
+		\hline
+		 & FirstFit & CBIP & MyAlgorithm \\ [0.5ex] 
+		 \hline\hline
+		 25 & 7.89 & 8.03 & 7.99 \\ 
+		 \hline
+		 50 & 14.02 & 14 & 13.58\\
+		 \hline
+		 100 & 21.94 & 21.93 & 21.04 \\
+		 \hline
+		 200 & 36.25 & 36.41 & 34.59 \\
+		 \hline
+		 400 & 62.88 & 63.19 & 60.16\\ [1ex] 
+		 \hline
+		\end{tabular}
+		\end{center}
+		
+		\bigbreak
+		\includegraphics[width=0.75\textwidth]{RandomGraph}
+
+\end{comment}
+
+%------------------------------------------------------------------------
+
+\section{Results}
+
+\bigbreak
+This section of the report is divided into 2 sections : Network Graph Data and Random Graph Data. \\
+
+\textbf{\textit{Random Graph Data:}}
+Selected Random Graphs and their details are mentions in the previous section of this report. The following table and graph represent the data 
+that was collected. These results were generated after 100 iterations on same graphs but using different random input order.
+%------------------------------------------------------------------------
+
+	\begin{minipage}{0.5\linewidth}
+		 \begin{tabular}{||p{2.5cm} | p{0.8cm} | p{1.5cm} | p{1.5cm} | p{1.9cm} ||} 
+			\hline
+			\multicolumn{5}{|c|}{Random Graphs} \\
+			\hline
+			\hline
+			Graph Name& Nodes & \multicolumn{3}{|c|}{Colors} \\
+			\hline
+			 & & FirstFit & CBIP & MyAlgorithm \\ [0.5ex] 
+			 \hline\hline
+			RandomGraph1 & 25 & 7.89 & 8.03 & 7.99 \\ 
+			 \hline
+			RandomGraph2 & 50 & 14.02 & 14 & 13.58\\
+			 \hline
+			RandomGraph3 & 100 & 21.94 & 21.93 & 21.04 \\
+			 \hline
+			RandomGraph4 & 200 & 36.25 & 36.41 & 34.59 \\
+			 \hline
+			RandomGraph5 & 400 & 62.88 & 63.19 & 60.16\\ [1ex] 
+			 \hline
+		\end{tabular}
+	\end{minipage}\hfill
+	\begin{minipage}{5cm}
+		\centering
+		\includegraphics[height=5cm,width=7cm]{RandomGraph}
+	\end{minipage}
+\bigbreak
+We can observe from the following data that, all three algorithms have a very similar performance. MyAlgorithm has perfomed a little better than
+FirstFit and CBIP, so can see that use of Randomness has helped. We can observe that the introduction of Randomness benifitted us. 
+The CBIP and FirstFit have almost similar results. \\
+
+\bigbreak
+
+\textbf{\textit{Network Graph Data:}}
+Selected Network Graphs and their details are mentions in the previous section of this report. The following table and graph represent the data 
+that was collected. Similarto the Random Graphs, the results were generated after 100 iterations on same graphs but using different random 
+input order.\\
+
+\bigbreak
+	\begin{minipage}{0.5\linewidth}
+		 \begin{tabular}{||p{2.5cm} | p{0.8cm} | p{1.5cm} | p{1.5cm} | p{1.9cm} ||} 
+			\hline
+			\multicolumn{5}{|c|}{Network Repository Graphs} \\
+			 \hline
+			\hline
+			Graph Name& Nodes & \multicolumn{3}{|c|}{Colors} \\
+			\hline
+ 		 	& & FirstFit & CBIP & MyAlgorithm \\ [0.5ex] 
+ 			\hline\hline
+			 dwt\_66$^{[1]}$& 66 & 4.91 & 17.5 & 17.53 \\ 
+			 \hline
+ 			 GD06\_theory$^{[2]}$& 101 & 6.41 & 3.08 & 3.08 \\
+ 			\hline
+			can\_144$^{[3]}$ & 144 & 9.41 & 32.49 & 32.49 \\
+			 \hline
+			 cat\_ears\_3\_1$^{[4]}$& 204 & 6.36 & 29.05 & 28.23 \\
+ 			\hline
+ 			ash219$^{[5]}$& 219 & 6.23 & 22.81 & 23.61\\ [1ex] 
+ 			\hline
+		\end{tabular}
+	\end{minipage}\hfill
+	\begin{minipage}{5cm}
+		\centering
+		\includegraphics[height=5cm,width=7cm]{NetworkRepoGraph}
+	\end{minipage}
+
+%------------------------------------------------------------------------
+
+We can observe from the following data that, FirstFit usually performs better and is more stable than CBIP and MyAlgorithm. The CBIP and 
+MyAlgorithm performance is very similar. We can observe that the introduction of Randomness hasn't benifitted us. The greedy based approach
+works well for the Network Repository Graphs. \\
+
+
+We also observe that 2 major factors affect the performance of these algorithms i.e  Input Order and Graph Density.
+\bigbreak
+\textit{Input Order} : We can easily show that with use of an adversarial input, CBIP will perform better than FirstFit, but since we use a Random 
+input order, it seems to work towards the advantage of FirstFit.\\
+\bigbreak
+\textit{Graph Density} : Intuitively, the denser the graph(more edges between nodes), the worst FirstFit should perform. While CBIP
+should perform better than FirstFit, but due to a Random Input Order in our experiment FirstFit does better if not the same.\\ 
+
+MyAlgorithm seems to perform better, if not the same as CBIP. This shows that Randomness does help, if not in all cases. 
+
+
 
 \section{Future Directions}
-0.5 page\\
-This is where you explain in which directionyou can extend this project. Mention interesting open problems, etc. If you had more time,
-what thing would you have liked to try?
+
+
+In the future we would like to use additional graph parameters such as average degree of vertices in our experimental set up. We can extend these coloring techniques to planar  graph coloring problems(eg. 3D Coloring) as well. We also would like to continue and see
+ where else we can use randomness in color selection. Initially, we wanted to implement a randomized online graph coloring algorithm proposed 
+by Sundar Vishwanathan in "Randomized online graph coloring"$^{[6]}$, but due inability to get the paper we couldn't produce it.\\
+
+One of the major limitations for this project is that we used a very limited sample space.We could have used larger graphs(with more number of
+vertices), and  the creation of Random Graphs in our project had produced very dense graphs probably because the probablility was set at 0.4 
+to an edge to be added. This caused very dense graphs to be created, we would like to test our code with sparse graphs by reducing the probability. 
 \newpage
 
 \section{Bibliography}
 
-%----------------------------------------------------------------------------------------------------------------------------------------
+\begin{enumerate}
+	\item dwt-66,SYMMETRIC CONNECTION TABLE FROM DTNSRDC, WASHINGTON, G. Everstine, D. Taylor, Miscellaneous Networks,
+			 The Network Data Repository with Interactive Graph Analytics and Visualization, Ryan A. Rossi and Nesreen K. Ahmed
+
+	\item GD-06\_Theory,Graph Drawing Contest, Pajek network,2006, Miscellaneous Networks,
+			 The Network Data Repository with Interactive Graph Analytics and Visualization, Ryan A. Rossi and Nesreen K. Ahmed
+
+	\item can-144,SYMMETRIC PATTERN FROM CANNES,LUCIEN MARRO,JUNE 1981,
+ 			The Network Data Repository with Interactive Graph Analytics and Visualization,Ryan A. Rossi and Nesreen K. Ahmed
+
+	\item cat-ears-3-1, Combinatorial optimization as polynomial eqns, Susan Margulies, UC Davis ,2008, Miscellaneous Networks,
+			 The Network Data Repository with Interactive Graph Analytics and Visualization, Ryan A. Rossi and Nesreen K. Ahmed
+
+	\item ash219,UNSYMMETRIC OVERDETERMINED PATTERN OF HOLLAND SURVEY. ASHKENAZI,1974 ,Miscellaneous Networks,
+			 The Network Data Repository with Interactive Graph Analytics and Visualization, Ryan A. Rossi and Nesreen K. Ahmed
+
+
+  	\item Randomized Online Graph Coloring, Sundar Viswanathan, Mathematics, Computer Science, J.Algorithms, 1992.
+\end{enumerate}
+
 
 
 
