@@ -32,11 +32,29 @@
 
 
 \section{Introduction}
-Brief description of the problem, its significance, the main message of the paper, and briefly mention the key results.
+Graph coloring is defined as, assignment of "colors" to certain objects in a graph subject to certain constraints.
+There are different types of graph coloring,such as, Vertex coloring, Edge Coloring, Face coloring (planar).
+ In this paper, we deal with on-line Vertex coloring, which is defined as 
+coloring vertices of a graph such that no two adjacent vertices share the same color.\\
+
+$^{[1]}$An on-line coloring is a coloring algorithm that immediately colors the vertices of a graph G taken from a list without looking ahead or changing colors already assigned. To be precise, an on-line coloring algorithm of G is an algorithm that properly colors G by recieving its vertices in some order $v_1,v_2,v_3...v_n$. The color of $v_i$ assigned by looking at the subgraph of G induced by the set $\{v_1,v_2...v_i\}$, and the color of $v_i$ never changes during the algorithm.\\
+
+Some common applications of Graph Coloring include Job Scheduling, Register Allocation and Sudoku Solving.\\
+
+In this paper, we narrow our focus on the problem of Bipartite Graphs coloring.
+We compare the performance of 3 graph coloring algorithms. 
+Two of them are well known (i.e First Fit and CBIP), the third algorithm (MyAlgorithm) is similar to CBIP but uses randomization when
+ assigning color. We run these algorithms and compare their performance with graphs of different sizes. Some graphs were created by the author itself using the Erdős–Rényi model, while the other were taken from the Network Repository.\\
+
+ We observe that First Fit, eventhough is known to theoretically to perform worse that CBIP, performs is very comparable to CBIP in our testing.
+First Fit also seems to give us a very stable set results in all the graphs that we tested.
+CBIP is seen to give us a very erratic results when it comes to the Network Repository graphs. 
+ The randomized version of CBIP, introduced by us, does seem to give us a little bit of improvement over the original CBIP.
+
 
 \section{Background} 
-Contains some history about online coloring problem. Historical notes and references at the end of Chapter 5 can be helpful 
-for this, but you should go beyond what's just written there.
+
+$^{[2]}$Coloring  theory  started  with  the  problem  of  coloring  the countries of a map in such a way that no two countries that have a common border receive the same color.  If we denote the countries by points in the plane and connect each pair of points that correspond to countries with a common border by a curve, we obtain a planar graph. The celebrated Four Color Problem  asks  if  every  planar  graph  can  be  colored  with  4 colors.  It seems to have been mentioned for the first time inwriting in an 1852 letter from A. De Morgan to W.R. Hamilton. Nobody thought at that time that it was the beginning of a new theory. The first ”proof” was given by Kempe in 1879. It stood for more than 10 years until Heawood in 1890 found a mistake.   Heawood proved that five colors are enough to color any map.  The Four Color Problem became one of the most difficult problems in Graph Theory. Besides colorings it stimulated many other areas of graph theory. Generally, coloring theory is the theory about conflicts:  adjacent vertices in a graph always must have distinct colors, i.e.  they are in a permanent conflict. If we have a ”good” coloring, then we respect all the conflicts. If we have a ”bad” coloring, then we have a pair of adjacent vertices colored with the same color. This  looks  like  having  a  geographic  map  where  some  two countries having common border are colored with the samecolor. Graphs  are  used  to  depict  ”what  is  in  conflict  with what”, and colors are used to denote the state of a vertex. So, more precisely, coloring theory is the theory of ”partitioning the sets having internal unreconcilable conflicts” because we will only count ”good” colorings.
 
 \newpage
 
@@ -53,17 +71,19 @@ The Psuedocode for the is Algorithm is presented below.
 	  \begin{minipage}{0.45\textwidth}
 	    \begin{algorithmic}[1]% Taken from the algorithmicx package documentation
 	      \Procedure{MyAlgorithm}{$G,\sigma$}
-	      \State Initialize List L.
+	      \State Initialize Set \textit{$S_c$}.
 	      \State Compute $C_v \mbox{ - connected component of } v$
 	      \State Compute bipartition of $C_v = S_v \cup \widetilde{S_v}$
 	      \State \ \ \ \  v $\in S_v$ and $N(v) \subseteq \widetilde{S_v}$
-	      \State L= colors \textbf{not} in $\widetilde{S_v} \mbox{ but present in } S_v$
-	      \State Let \textit{i} be a color Randomly selected out of L.
-	      \State Color \textit{v} with \textit{i}
+	      \State $S_c$= colors \textbf{not} in $\widetilde{S_v} \mbox{ but present in } S_v$
+	      \State Color \textit{i} = Randomly selected out of $S_c$.
+	      \State Color v with \textit{i}
 	      \EndProcedure
 	    \end{algorithmic}
 	  \end{minipage}
-	The Breadth First Search Algorithm is used to separate all the vertices that are in the $S_v$ and $\widetilde{S_v}$ . A set of all the vertices/colors that are not in $\widetilde {S_v}$ but are in $S_v$ is created. A color is selected from the set and assigned to the vertex.\\
+	The Breadth First Search Algorithm is used to separate all the vertices that are in the $S_v$ and $\widetilde{S_v}$ . 
+	The Set $S_c$ contains set of all the vertices/colors that are not in $\widetilde {S_v}$ but are in $S_v$ is created.
+	 A color is selected randomly from $S_c$  and assigned to the vertex.\\
 
 	 In CBIP, we select color with the minimum color value from the set. But in our algorithm, the color is selected randomly from the set.
 
@@ -127,11 +147,13 @@ code to function as intended. We may have missed some edge cases. But because of
 
 \section{Experimental Details}
 
-\bigbreak
-This program was coded in Java. The version of Java used was Java version 14.\\
-The system where this code was written used the Windows operating system, had 16 Gigabytes of RAM and with an i5 processing chip. \\
+\textit{\textbf{System Specification : }}
+This program was coded in Java programming language using Java version 14.
+The system was coded and tested in Windows operating system,with 16 Gigabytes of RAM and with an i5 processor.
 The code was written in the Eclipse IDE. \\
-The Network Repository Graphs used: \\
+\newpage
+\textit{\textbf{Input Graphs Details: }}
+
 \begin{center}
  \begin{tabular}{||p{3cm} | p{4cm} | p{2cm}|p{2cm} ||} 
 \hline
@@ -141,20 +163,19 @@ The Network Repository Graphs used: \\
 
  Graph Name& File Name & Nodes & Edges \\ [0.5ex] 
  \hline\hline
- dwt\_66$^{[1]}$ &NetworkRepoGraph1.txt & 66 &193  \\ 
+ dwt\_66$^{[3]}$ &NetworkRepoGraph1.txt & 66 &193  \\ 
  \hline
- GD06\_theory$^{[2]}$&NetworkRepoGraph2.txt  & 101 & 190\\
+ GD06\_theory$^{[4]}$&NetworkRepoGraph2.txt  & 101 & 190\\
  \hline
-can\_144$^{[3]}$ &NetworkRepoGraph3.txt  & 144 & 720 \\
+can\_144$^{[5]}$ &NetworkRepoGraph3.txt  & 144 & 720 \\
  \hline
- cat\_ears\_3\_1$^{[4]}$&NetworkRepoGraph4.txt & 204 & 542\\
+ cat\_ears\_3\_1$^{[6]}$&NetworkRepoGraph4.txt & 204 & 542\\
  \hline
-  ash219$^{[5]}$&NetworkRepoGraph5.txt  & 219 &438\\ [1ex] 
+  ash219$^{[7]}$&NetworkRepoGraph5.txt  & 219 &438\\ [1ex] 
  \hline
 \end{tabular}
 \end{center}
 
-The Random Graphs used:\\
 \begin{center}
  \begin{tabular}{||p{3cm} | p{4cm} | p{2cm}|p{2cm} ||} 
 \hline
@@ -177,7 +198,6 @@ RandomGraph5 & RandomGraph5.txt  & 400 & 36,317\\ [1ex]
 \end{tabular}
 \end{center}
 
-\newpage
 %------------------------------------------------------------------------
 
 
@@ -298,15 +318,15 @@ input order.\\
 			\hline
  		 	& & FirstFit & CBIP & MyAlgorithm \\ [0.5ex] 
  			\hline\hline
-			 dwt\_66$^{[1]}$& 66 & 4.91 & 17.5 & 17.53 \\ 
+			 dwt\_66$^{[3]}$& 66 & 4.91 & 17.5 & 17.53 \\ 
 			 \hline
- 			 GD06\_theory$^{[2]}$& 101 & 6.41 & 3.08 & 3.08 \\
+ 			 GD06\_theory$^{[4]}$& 101 & 6.41 & 3.08 & 3.08 \\
  			\hline
-			can\_144$^{[3]}$ & 144 & 9.41 & 32.49 & 32.49 \\
+			can\_144$^{[5]}$ & 144 & 9.41 & 32.49 & 32.49 \\
 			 \hline
-			 cat\_ears\_3\_1$^{[4]}$& 204 & 6.36 & 29.05 & 28.23 \\
+			 cat\_ears\_3\_1$^{[6]}$& 204 & 6.36 & 29.05 & 28.23 \\
  			\hline
- 			ash219$^{[5]}$& 219 & 6.23 & 22.81 & 23.61\\ [1ex] 
+ 			ash219$^{[7]}$& 219 & 6.23 & 22.81 & 23.61\\ [1ex] 
  			\hline
 		\end{tabular}
 	\end{minipage}\hfill
@@ -349,6 +369,11 @@ to an edge to be added. This caused very dense graphs to be created, we would li
 \section{Bibliography}
 
 \begin{enumerate}
+	
+	\item On-Line and First Fit Coloring of Graphs, A.Gyárfás and J.Lehel, Computer and Automation Institute, Hungarian Academy Of Sciences. 
+	
+	\item Graph Coloring: History, results and open problems,Vitaly I. Voloshin, 2009, Troy University, Troy, AL
+
 	\item dwt-66,SYMMETRIC CONNECTION TABLE FROM DTNSRDC, WASHINGTON, G. Everstine, D. Taylor, Miscellaneous Networks,
 			 The Network Data Repository with Interactive Graph Analytics and Visualization, Ryan A. Rossi and Nesreen K. Ahmed
 
