@@ -2,7 +2,7 @@
 
 COMP691 Folder contains the source code.
 
-Graphs folder - contains all the graphs that were used for running this program.
+ProjectResouces\Graphs folder - contains all the graphs that were used for running this program.
 
 Graphs\NetworkRepoGraphs - Contains all the graphs from downloaded from the Network Repository. 
 
