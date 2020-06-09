@@ -1,1 +1,2 @@
 This is the Report Folder
+The latex folder Contains the report.
